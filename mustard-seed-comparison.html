@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Conte nt-Type" content="text/html; charset=UTF-8">
+  <title>Mustard Seed Interactive Comparison Page</title>
+  <style type="text/css">
+    html {
+      min-width: 580px;
+    }
+    body {
+      background-color: #222;
+      color: #fff;
+      font-size: 20px;
+      overflow: hidden;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+    }
+    .controls {
+      position: relative;
+      z-index: 1;
+    }
+    a,
+    a:visited {
+      color: #fff;
+      font-size: 11px;
+    }
+    section {
+      margin: 0 auto;
+      position: relative;
+    }
+    .items {
+      bottom: 0;
+      left: 15%;
+      position: absolute;
+      width: 70%;
+      height: calc(100vh - 100px);
+    }
+    section img {
+      bottom: 0;
+      max-height: 100%;
+      position: absolute;
+      transition: 0.5s ease-in;
+    }
+    .object {
+      right: 20px;
+    }
+    .person {
+      left: 20px;
+    }
+
+    footer {
+      bottom: 0;
+      font-size: 6px;
+      position: absolute;
+      text-align: center;
+      width: 100vw;
+    }
+
+    @media (min-width: 1200px) {
+      .items {
+        left: 25%;
+        width: 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="controls">
+    <h1 title="A mustard seed is 1mm in size, and can grow to be more than 9m in height&mdash;that&rsquo;s 9,000 times its original height!">What if we could grow as much as a mustard seed?</h1>
+
+    <a target="_blank" href="https://www.lds.org/scriptures/nt/matt/17.20">Matthew 17:20</a>
+    <a target="_blank" href="https://www.lds.org/scriptures/nt/matt/13.31-32">Matthew 13:31-32</a>
+    <br>
+    <label>&quot;Seed&quot;:
+      <select class="person-options" onchange="calculate(this)">
+      </select>
+    </label>
+
+    <label>Comparison:
+      <select class="object-options" onchange="calculate(this)">
+      </select>
+    </label>
+  </section>
+
+  <section class="items">
+    <img class="item object">
+    <img class="item person">
+  </section>
+
+  <footer>
+    All images &copy; by their respective owners, and were only modified for the sake of transparency.
+  </footer>
+
+  <script type="text/javascript">
+    const MUSTARD_SEED_RATIO = 9144; // (Seed: 1mm; Grown: 9.144m)
+
+    let currentObjectIndex = 0;
+    let objectList = [ // sizes are in feet
+      { name: "The Great Pyramid of Giza", size: 455 },
+      { name: "Burj Khalifa", size: 2722 },
+      { name: "Angel Falls", size: 3212 },
+      { name: "Star Destroyer", size: 5249 },
+      { name: "Mount Everest", size: 29029 },
+      { name: "Deimos", size: 42650 },
+      { name: "Super Star Destroyer", size: 62335 },
+      { name: "The Death Star", size: 459318 },
+      { name: "The Moon", size: 1148300 }
+    ]
+
+    let currentPersonIndex = 0;
+
+    // ADD YOUR OWN IMAGE NAMES AND SIZES HERE
+    // name is the exact name of the image to load.
+    // size is in inches.
+    let personList = [
+      { name: "Duplo Man", size: 2.5 },
+      { name: "Elsa Barbie Doll", size: 12.8 },
+      { name: "Kayti", size: 35 },
+      { name: "Linzie", size: 41 },
+      { name: "Jacen", size: 50 },
+      { name: "Andre the Giant", size: 88 },
+      { name: "T-Rex", size: 240}
+    ]
+
+    // Populate person list
+    for (var i = 0; i < personList.length; i++) {
+      var argh = document.createElement("option");
+      argh.setAttribute("value", i);
+      argh.innerHTML = personList[i].name;
+      document.querySelector(".person-options").append(argh);
+    }
+
+    // Populate item list
+    for (var i = 0; i < objectList.length; i++) {
+      var argh = document.createElement("option");
+      argh.setAttribute("value", i);
+      argh.innerHTML = objectList[i].name;
+      document.querySelector(".object-options").append(argh);
+    }
+
+    // Calculate sizes relative to each other and the window height
+    function calculate (target) {
+      if (target && target.classList.contains("person-options")) {
+        currentPersonIndex = target.value;
+      }
+      if (target && target.classList.contains("object-options")) {
+        currentObjectIndex = target.value;
+      }
+
+      let objectRatio = (personList[currentPersonIndex].size * MUSTARD_SEED_RATIO / 12) / objectList[currentObjectIndex].size;
+
+      if (objectRatio >= 1) {
+        // person is bigger
+        let vhEquivalent = 100/objectRatio;
+        document.querySelector(".person").setAttribute("style", "height: 100vh;");
+        document.querySelector(".object").setAttribute("style", "height: "+ vhEquivalent + "% ;");
+      } else {
+        // thing is bigger
+        let vhEquivalent = objectRatio * 100;
+        document.querySelector(".person").setAttribute("style", "height: "+ vhEquivalent + "% ;");
+        document.querySelector(".object").setAttribute("style", "height: 100vh;");
+      }
+
+      console.log(personList[currentPersonIndex].name + " * MUSTARD_SEED_RATIO / " + objectList[currentObjectIndex].name, objectRatio);
+
+      document.querySelector(".person").setAttribute("src",  "./images/people/" + personList[currentPersonIndex].name + ".png");
+      document.querySelector(".object").setAttribute("src",  "./images/objects/" + objectList[currentObjectIndex].name + ".png");
+    }
+
+    calculate();
+  </script>
+</body>
+</html>
